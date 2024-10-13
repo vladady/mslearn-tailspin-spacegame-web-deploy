@@ -29,6 +29,7 @@ stages:
       displayName: 'Use .NET SDK $(dotnetSdkVersion)'
       inputs:
         version: '$(dotnetSdkVersion)'
+
     - task: AzureCLI@2
       inputs:
         azureSubscription: $(azureSubscription)
@@ -41,7 +42,7 @@ stages:
             --template-file $(bicepFilePath) \
             --parameters location="$(location)" \
                          appServicePlanName="$(appServicePlanName)" \
-                         webAppName='tailspin-space-game-web-1234'
+                         webAppName='vlad-tailspin-space-game-web-1234'
 
     - task: Npm@1
       displayName: 'Run npm install'
