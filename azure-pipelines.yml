@@ -3,6 +3,11 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
+  azureSubscription: 'Resource Manager - Tailspin - Space Game'
+  bicepFilePath: './infrastructure/main.bicep'
+  resourceGroupName: 'tailspin-space-game-rg'
+  appServicePlanName: 'tailspinspacegame-dev'
+  location: 'West Europe'
   
 stages:
 - stage: 'Build'
@@ -24,7 +29,21 @@ stages:
       displayName: 'Use .NET SDK $(dotnetSdkVersion)'
       inputs:
         version: '$(dotnetSdkVersion)'
-    
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          # Deploy the Bicep file, passing parameters from the pipeline
+          az deployment group create \
+            --resource-group $(resourceGroupName) \
+            --template-file $(bicepFilePath) \
+            --parameters location="$(location)" \
+                         rgName="$(resourceGroupName)" \
+                         appServicePlanName="$(appServicePlanName)" \
+                         webAppName="$(WebAppName)"
+
     - task: Npm@1
       displayName: 'Run npm install'
       inputs:
