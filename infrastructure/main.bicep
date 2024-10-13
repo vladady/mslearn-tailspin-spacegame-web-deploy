@@ -3,8 +3,13 @@ param location string
 param appServicePlanName string
 param webAppName string
 
+// Check if the web app already exists
+resource existingWebApp 'Microsoft.Web/sites@2022-03-01' existing = {
+  name: webAppName
+}
+
 // Create App Service Plan
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = if (existingWebApp.name == null) {
   name: appServicePlanName
   location: location
   sku: {
@@ -15,7 +20,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 }
 
 // Create Web App
-resource webApp 'Microsoft.Web/sites@2022-03-01' = {
+resource webApp 'Microsoft.Web/sites@2022-03-01' = if (existingWebApp.name == null) {
   name: webAppName
   location: location
   properties: {
@@ -23,5 +28,5 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-// Output the App Service URL
-output webAppUrl string = webApp.properties.defaultHostName
+// Output the web app URL
+output webAppUrl string = existingWebApp.name != null ? existingWebApp.properties.defaultHostName : webApp.properties.defaultHostName
