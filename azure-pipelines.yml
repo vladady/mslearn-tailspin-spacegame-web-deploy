@@ -40,7 +40,6 @@ stages:
             --resource-group $(resourceGroupName) \
             --template-file $(bicepFilePath) \
             --parameters location="$(location)" \
-                         rgName="$(resourceGroupName)" \
                          appServicePlanName="$(appServicePlanName)" \
                          webAppName='tailspin-space-game-web-1234'
 
