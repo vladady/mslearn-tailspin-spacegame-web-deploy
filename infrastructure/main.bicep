@@ -1,14 +1,7 @@
 // Parameters
 param location string
-param rgName string
 param appServicePlanName string
 param webAppName string
-
-// Check if resource group exists (no direct Bicep support for RG existence check, this is implied)
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: rgName
-  location: location
-}
 
 // Create App Service Plan (Free tier as default)
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = if (rg.properties.provisioningState == 'Succeeded') {
